@@ -1,22 +1,46 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"os"
 
 	"github.com/urfave/cli/v2"
 )
 
-var key string
-
 func main() {
 	app := &cli.App{
 		Name:  "nosh",
 		Usage: "nostr CLI helper",
-		Action: func(*cli.Context) error {
-			fmt.Print("hello\n")
-			return nil
+		Commands: []*cli.Command{
+			genKeyCmd,
+			eventCmd,
+			// {
+			// 	Name:   "genkey",
+			// 	Usage:  "Generate private key",
+			// 	Action: generatePrivateKey,
+			// },
+			// {
+			// 	Name:  "event",
+			// 	Usage: "Generate nostr events",
+			// 	Flags: []cli.Flag{
+			// 		&cli.StringFlag{
+			// 			Name:    "content",
+			// 			Aliases: []string{"c"},
+			// 			Usage:   "set content for event",
+			// 		},
+			// 		&cli.IntFlag{
+			// 			Name:    "kind",
+			// 			Aliases: []string{"k"},
+			// 			Usage:   "set event kind",
+			// 			Value:   1,
+			// 		},
+			// 		&cli.StringFlag{
+			// 			Name:  "pk",
+			// 			Usage: "private key",
+			// 		},
+			// 	},
+			// 	Action: generateEvent,
+			// },
 		},
 	}
 
