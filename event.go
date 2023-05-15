@@ -7,9 +7,9 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var eventCmd *cli.Command = &cli.Command{
+var eventCmd = &cli.Command{
 	Name:  "event",
-	Usage: "Generate nostr events",
+	Usage: "generate nostr events",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:    "content",
@@ -25,6 +25,12 @@ var eventCmd *cli.Command = &cli.Command{
 		&cli.StringFlag{
 			Name:  "pk",
 			Usage: "private key",
+		},
+		&cli.BoolFlag{
+			Name:               "wrap",
+			Aliases:            []string{"w"},
+			Usage:              `wrap event for sending to relay ["EVENT", <json event>]`,
+			DisableDefaultText: true,
 		},
 	},
 	Action: generateEvent,
@@ -57,6 +63,13 @@ func generateEvent(ctx *cli.Context) error {
 		return fmt.Errorf("error with event signature")
 	}
 
-	fmt.Println(evt.String())
+	eventStr := evt.String()
+	// wrap event in ["EVENT", <json event>] if flag is present
+	if ctx.Bool("wrap") {
+		fmt.Printf("[\"EVENT\", %v]\n", eventStr)
+	} else {
+		fmt.Println(eventStr)
+	}
+
 	return nil
 }

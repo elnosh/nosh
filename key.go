@@ -7,7 +7,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var genKeyCmd *cli.Command = &cli.Command{
+var genKeyCmd = &cli.Command{
 	Name:   "genkey",
 	Usage:  "Generate private key",
 	Action: generatePrivateKey,
