@@ -9,7 +9,7 @@ import (
 
 var genKeyCmd = &cli.Command{
 	Name:   "genkey",
-	Usage:  "Generate private key",
+	Usage:  "generate private key",
 	Action: generatePrivateKey,
 }
 

@@ -1,4 +1,4 @@
-module github.com/elnosh/nostr-helper
+module github.com/elnosh/nosh
 
 go 1.20
 
