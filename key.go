@@ -11,16 +11,43 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var genKeyCmd = &cli.Command{
-	Name:   "genkey",
-	Usage:  "generate private key",
-	Action: generatePrivateKey,
+var keyCmd = &cli.Command{
+	Name:   "key",
+	Usage:  "generate, set private key",
+	Action: keyAction,
+	Flags: []cli.Flag{
+		&cli.BoolFlag{
+			Name:               "gen",
+			Usage:              "generate private key",
+			DisableDefaultText: true,
+		},
+		&cli.StringFlag{
+			Name:  "set",
+			Usage: "set private key",
+		},
+	},
 }
 
-func generatePrivateKey(*cli.Context) error {
+func keyAction(ctx *cli.Context) error {
+	if ctx.NumFlags() < 1 {
+		fmt.Printf("specify flag for 'key' command\n\n")
+		cli.ShowSubcommandHelp(ctx)
+		return nil
+	}
+
+	if ctx.Bool("gen") {
+		generatePrivateKey()
+	} else if ctx.IsSet("set") {
+		// need to validate key passed
+		savePrivateKey(ctx.String("set"))
+	}
+
+	return nil
+}
+
+func generatePrivateKey() {
 	pk := nostr.GeneratePrivateKey()
 	fmt.Printf("private key: %v\n", pk)
-	return nil
 }
 
 func savePrivateKey(key string) {

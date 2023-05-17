@@ -8,11 +8,12 @@ import (
 )
 
 func main() {
+	InitConfig()
 	app := &cli.App{
 		Name:  "nosh",
-		Usage: "nostr CLI tool",
+		Usage: "nostr CLI tool for generating events",
 		Commands: []*cli.Command{
-			genKeyCmd,
+			keyCmd,
 			eventCmd,
 		},
 	}

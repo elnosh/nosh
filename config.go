@@ -23,6 +23,7 @@ func InitConfig() {
 func getConfigPath() string {
 	var configPath string
 
+	var err error
 	// os.UserConfigDir() returns $HOME/Library/Application Support for darwin
 	// set config path manually to $HOME/.config
 	if runtime.GOOS == "darwin" {
@@ -33,7 +34,10 @@ func getConfigPath() string {
 
 		configPath = filepath.Join(home, ".config")
 	} else {
-		configPath, _ = os.UserConfigDir()
+		configPath, err = os.UserConfigDir()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	configPath = filepath.Join(configPath, "nosh")
