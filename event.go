@@ -9,7 +9,7 @@ import (
 
 var eventCmd = &cli.Command{
 	Name:  "event",
-	Usage: "generate nostr events",
+	Usage: "generate nostr event",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
 			Name:    "content",
