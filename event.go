@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/urfave/cli/v2"
@@ -37,10 +38,19 @@ var eventCmd = &cli.Command{
 }
 
 func generateEvent(ctx *cli.Context) error {
-	privKey := ctx.String("pk")
-	if privKey == "" {
-		return fmt.Errorf("private key not specified")
+	privKey := ""
+
+	if ctx.IsSet("pk") {
+		privKey = ctx.String("pk")
+	} else {
+		config := getConfig()
+		if config == nil || config.PrivateKey == "" {
+			printErr("private key not set")
+		}
+
+		privKey = config.PrivateKey
 	}
+
 	pubkey, err := nostr.GetPublicKey(privKey)
 	if err != nil {
 		return err
@@ -56,11 +66,7 @@ func generateEvent(ctx *cli.Context) error {
 
 	err = evt.Sign(privKey)
 	if err != nil {
-		return err
-	}
-	valid, err := evt.CheckSignature()
-	if !valid || err != nil {
-		return fmt.Errorf("error with event signature")
+		printErr("error signing event")
 	}
 
 	eventStr := evt.String()
@@ -72,4 +78,9 @@ func generateEvent(ctx *cli.Context) error {
 	}
 
 	return nil
+}
+
+func printErr(err string) {
+	fmt.Println(err)
+	os.Exit(0)
 }

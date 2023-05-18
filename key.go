@@ -38,7 +38,6 @@ func keyAction(ctx *cli.Context) error {
 	if ctx.Bool("gen") {
 		generatePrivateKey()
 	} else if ctx.IsSet("set") {
-		// need to validate key passed
 		savePrivateKey(ctx.String("set"))
 	}
 
@@ -58,6 +57,7 @@ func savePrivateKey(key string) {
 	if err != nil {
 		log.Fatalf("error opening '%v' file: %v", configFilePath, err)
 	}
+	defer configFile.Close()
 
 	config := Config{PrivateKey: key}
 

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"io"
 	"log"
 	"os"
 	"path/filepath"
@@ -42,4 +44,25 @@ func getConfigPath() string {
 
 	configPath = filepath.Join(configPath, "nosh")
 	return configPath
+}
+
+func getConfig() *Config {
+	var config *Config
+
+	configPath := getConfigPath()
+	configFilePath := filepath.Join(configPath, "config.json")
+
+	configFile, err := os.Open(configFilePath)
+	if err != nil {
+		log.Fatalf("error reading config: %v", err)
+	}
+	defer configFile.Close()
+
+	dec := json.NewDecoder(configFile)
+	err = dec.Decode(&config)
+	if err != nil && err != io.EOF {
+		log.Fatalf("error reading config: %v", err)
+	}
+
+	return config
 }
