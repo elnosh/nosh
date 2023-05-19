@@ -17,6 +17,9 @@ GLOBAL OPTIONS:
    --help, -h  show help
 ```
 
+## Installation
+```go install github.com/elnosh/nosh@latest```
+
 ## How to use
 
 * generate key
