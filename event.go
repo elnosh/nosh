@@ -62,10 +62,9 @@ func generateEvent(ctx *cli.Context) error {
 		return err
 	}
 
-	var tags nostr.Tags
+	tags := []nostr.Tag{}
 
 	tagsFlag := ctx.StringSlice("tags")
-
 	for _, t := range tagsFlag {
 		if len(t) < 2 {
 			printErr("specify tags in format: -t e=<eventId>,p=<pubkey>")
@@ -82,7 +81,7 @@ func generateEvent(ctx *cli.Context) error {
 				}
 			}
 
-			tag := nostr.Tag{prefix, tagStr}
+			tag := nostr.Tag{string(prefix[0]), tagStr}
 			tags = append(tags, tag)
 		} else {
 			printErr("specify tags in format: -t e=<eventId>,p=<pubkey>")
