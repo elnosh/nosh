@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/nbd-wtf/go-nostr"
 	"github.com/urfave/cli/v2"
@@ -26,6 +27,11 @@ var eventCmd = &cli.Command{
 		&cli.StringFlag{
 			Name:  "pk",
 			Usage: "private key",
+		},
+		&cli.StringSliceFlag{
+			Name:    "tags",
+			Aliases: []string{"t"},
+			Usage:   "set tags for event: -t e=<eventId>,p=<pubkey>",
 		},
 		&cli.BoolFlag{
 			Name:               "wrap",
@@ -56,11 +62,38 @@ func generateEvent(ctx *cli.Context) error {
 		return err
 	}
 
+	var tags nostr.Tags
+
+	tagsFlag := ctx.StringSlice("tags")
+
+	for _, t := range tagsFlag {
+		if len(t) < 2 {
+			printErr("specify tags in format: -t e=<eventId>,p=<pubkey>")
+			return nil
+		}
+		prefix := t[:2]
+
+		if prefix == "e=" || prefix == "p=" {
+			tagStr, _ := strings.CutPrefix(t, prefix)
+
+			if prefix == "p=" {
+				if !nostr.IsValidPublicKeyHex(tagStr) {
+					printErr("invalid pubkey")
+				}
+			}
+
+			tag := nostr.Tag{prefix, tagStr}
+			tags = append(tags, tag)
+		} else {
+			printErr("specify tags in format: -t e=<eventId>,p=<pubkey>")
+		}
+	}
+
 	evt := &nostr.Event{
 		PubKey:    pubkey,
 		CreatedAt: nostr.Now(),
 		Kind:      ctx.Int("kind"),
-		Tags:      []nostr.Tag{},
+		Tags:      tags,
 		Content:   ctx.String("content"),
 	}
 
