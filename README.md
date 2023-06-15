@@ -1,6 +1,6 @@
 # nosh
 
-nostr command-line tool for generating events
+[nostr](https://github.com/nostr-protocol/nostr) command-line tool for generating events
 
 ## Documentation
 

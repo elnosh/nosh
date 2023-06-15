@@ -26,7 +26,7 @@ var eventCmd = &cli.Command{
 		},
 		&cli.StringFlag{
 			Name:  "pk",
-			Usage: "private key",
+			Usage: "private key (does not have to be specified if key was set with 'key' command)",
 		},
 		&cli.StringSliceFlag{
 			Name:    "tags",
