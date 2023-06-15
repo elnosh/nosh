@@ -25,6 +25,11 @@ var keyCmd = &cli.Command{
 			Name:  "set",
 			Usage: "set private key",
 		},
+		&cli.BoolFlag{
+			Name:               "get",
+			Usage:              "get current public key set",
+			DisableDefaultText: true,
+		},
 	},
 }
 
@@ -35,10 +40,12 @@ func keyAction(ctx *cli.Context) error {
 		return nil
 	}
 
-	if ctx.Bool("gen") {
+	if ctx.IsSet("gen") {
 		generatePrivateKey()
 	} else if ctx.IsSet("set") {
 		savePrivateKey(ctx.String("set"))
+	} else if ctx.IsSet("get") {
+		getPubKey()
 	}
 
 	return nil
@@ -69,4 +76,17 @@ func savePrivateKey(key string) {
 	if err != nil {
 		log.Fatalf("error saving key: %v\n", err)
 	}
+}
+
+func getPubKey() {
+	config := getConfig()
+	if config == nil || config.PrivateKey == "" {
+		printErr("key not set")
+	}
+
+	pubkey, err := nostr.GetPublicKey(config.PrivateKey)
+	if err != nil {
+		printErr("error getting public key")
+	}
+	fmt.Println(pubkey)
 }
